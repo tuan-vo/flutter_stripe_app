@@ -35,21 +35,21 @@ Follow the steps below to run the demo:
    flutter run
    
 
-## Code Explanation
-# home_page.dart
+# Code Explanation
+## home_page.dart
 This file contains the main logic and UI for the payment page.
 - The `HomePage`: class is a stateful widget that represents the home page of the app.
 - The `makePayment()`: method handles the payment flow when the "Pay!" button is pressed. It creates a payment intent, configures the payment sheet, initializes it, and then displays it.
 - The `createPaymentIntent()` method sends a POST request to the Stripe API to create a payment intent based on the provided amount.
 - The `displayPaymentSheet()` method presents the payment sheet UI to the user.
 
-# app.dart
+## app.dart
 This file defines the MyApp class, which is the entry point for the Flutter app.
 - The `MyApp` class extends StatelessWidget and builds the MaterialApp with the specified theme and the HomePage as the initial screen.
 
-# main.dart
+## main.dart
 This file is the entry point for the Flutter app.
 - The `main()` function calls runApp() and starts the MyApp widget.
-
-## When you have problems, please refer to the following documents:
+-------------------------------------------
+# When you have problems, please refer to the following documents:
 https://github.com/flutter-stripe/flutter_stripe#android
