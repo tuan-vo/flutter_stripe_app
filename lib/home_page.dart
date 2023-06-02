@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:flutter_stripe_app/add-payment-card_page.dart';
+import 'package:flutter_stripe_app/saved-payment-cards.dart';
 import 'package:http/http.dart' as http;
 
+// Constants for Stripe API keys
 const publishable_key =
     "pk_test_51N6pjfJjOgMxOgVuOUaXzf9VAReJKHOLgDgQr2kyxM1I055VmjZCJ2WMDA4EB2A0pjjGYr0atHbWU3Cw2fzCFS0y00QcaPZU1G";
 const secret_key =
@@ -36,12 +39,18 @@ class _HomePageState extends State<HomePage> {
   void makePayment() async {
     try {
       String amount = amountController.text;
+
+      // Create a payment intent
       paymentIntent = await createPaymentIntent(amount);
+
+      // Create a payment intent
       var gpay = const PaymentSheetGooglePay(
         merchantCountryCode: "US",
         currencyCode: "USD",
         testEnv: true,
       );
+
+      // Create a payment intent
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: paymentIntent!["client_secret"],
@@ -51,12 +60,14 @@ class _HomePageState extends State<HomePage> {
         ),
       );
 
+      // Display the payment sheet
       displayPaymentSheet();
     } catch (e) {
       print(e.toString());
     }
   }
 
+  // Present the payment sheet
   void displayPaymentSheet() async {
     try {
       await Stripe.instance.presentPaymentSheet();
@@ -73,6 +84,7 @@ class _HomePageState extends State<HomePage> {
         "currency": "USD",
       };
 
+      // Send a POST request to create a payment intent
       http.Response response = await http.post(
         Uri.parse("https://api.stripe.com/v1/payment_intents"),
         body: body,
@@ -107,6 +119,24 @@ class _HomePageState extends State<HomePage> {
             ElevatedButton(
               onPressed: makePayment,
               child: const Text("Pay!"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AddPaymentCard()),
+                );
+              },
+              child: const Text("Add Payment!"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SavedPaymentCards()),
+                );
+              },
+              child: const Text("View Payment!"),
             ),
           ],
         ),
