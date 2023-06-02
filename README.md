@@ -51,4 +51,5 @@ This file defines the MyApp class, which is the entry point for the Flutter app.
 This file is the entry point for the Flutter app.
 - The `main()` function calls runApp() and starts the MyApp widget.
 
-
+## When you have problems, please refer to the following documents:
+https://github.com/flutter-stripe/flutter_stripe#android
