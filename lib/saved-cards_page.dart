@@ -3,7 +3,7 @@ import 'package:flutter_stripe_app/pay-with-saved-method.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-const secretKey =
+const secret_key =
     "sk_test_51N6pjfJjOgMxOgVuIckY4TcIzo2KHIsT540kwHIjmemQ5ISKcBRDOnMvLv4aZA5d1Cxmj2FEVe3FgdDdKZ1FVakv00qT69qCPx";
 const customerId = 'cus_O1WLT448ynbR9N';
 
@@ -25,9 +25,10 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
     final url = 'https://api.stripe.com/v1/payment_methods';
     final headers = {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Bearer $secretKey',
+      'Authorization': 'Bearer $secret_key',
     };
 
+    // Retrieve the saved cards for the customer from the Stripe API
     final response = await http.get(Uri.parse(url + '?customer=$customerId'),
         headers: headers);
     if (response.statusCode == 200) {
@@ -59,6 +60,7 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
 
           return GestureDetector(
             onTap: () {
+              // When a card is tapped, navigate to the PaymentPage and pass the selected payment method
               Navigator.push(
                 context,
                 MaterialPageRoute(

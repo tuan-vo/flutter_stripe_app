@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-const secretKey =
+const secret_key =
     "sk_test_51N6pjfJjOgMxOgVuIckY4TcIzo2KHIsT540kwHIjmemQ5ISKcBRDOnMvLv4aZA5d1Cxmj2FEVe3FgdDdKZ1FVakv00qT69qCPx";
 const customerId = 'cus_O1WLT448ynbR9N';
 
@@ -24,7 +24,7 @@ class _PaymentPageState extends State<PaymentPage> {
     final url = 'https://api.stripe.com/v1/payment_intents';
     final headers = {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Bearer $secretKey',
+      'Authorization': 'Bearer $secret_key',
     };
 
     final response = await http.post(
