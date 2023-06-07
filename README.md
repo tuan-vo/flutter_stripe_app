@@ -21,19 +21,27 @@ Follow the steps below to run the demo:
 3. flutter pub get
    ```bash
    flutter pub get
+4. Change branch
+   ```bash
+   git checkout add-and-pay-saved-payment-method
  
-4. Replace the Stripe API keys
-- Open home_page.dart file.
+5. Replace the Stripe API keys
+- Open .env.dart file.
 - Replace :
   ```bash
   // Constants for Stripe API keys
   const publishable_key = "your_publishable_key";
-  const secret_key = "your_secret_key";
+  const secret_key =  "your_secret_key";
+  const customerId = "your_customerId"
   
-5. Run the app:
+6. Run the app:
    ```bash
    flutter run
    
+# Functions
+- Fast payment : With this function, customers will need to pay with full information
+- Add payment methods : With this function, customers will need to pay with full information
+- See & Pay saved payment methods : With this function, customers will need to pay with full information
 
 # Code Explanation
 ## home_page.dart
@@ -50,6 +58,19 @@ This file defines the MyApp class, which is the entry point for the Flutter app.
 ## main.dart
 This file is the entry point for the Flutter app.
 - The `main()` function calls runApp() and starts the MyApp widget.
+
+## payment_page.dart
+This page helps users to pay quickly
+
+## add-payment-methods_page.dart
+This page allows users to add new payment methods
+
+## saved-cards_page.dart
+This page makes it possible for users to view the methods they have saved
+
+## pay-with-saved-method.dart
+This page makes it possible for users to view the methods they have saved
+
 -------------------------------------------
 # When you have problems, please refer to the following documents:
 https://github.com/flutter-stripe/flutter_stripe#android
