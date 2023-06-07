@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe_app/pay-with-saved-method.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-const secret_key =
-    "sk_test_51N6pjfJjOgMxOgVuIckY4TcIzo2KHIsT540kwHIjmemQ5ISKcBRDOnMvLv4aZA5d1Cxmj2FEVe3FgdDdKZ1FVakv00qT69qCPx";
-const customerId = 'cus_O1WLT448ynbR9N';
+import 'package:flutter_stripe_app/.env.dart';
 
 class SavedCardsPage extends StatefulWidget {
   @override

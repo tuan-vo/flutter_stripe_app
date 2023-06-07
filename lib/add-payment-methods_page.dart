@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-const secret_key =
-    "sk_test_51N6pjfJjOgMxOgVuIckY4TcIzo2KHIsT540kwHIjmemQ5ISKcBRDOnMvLv4aZA5d1Cxmj2FEVe3FgdDdKZ1FVakv00qT69qCPx";
+import 'package:flutter_stripe_app/.env.dart';
 
 class PaymentMethodPage extends StatefulWidget {
   @override
@@ -18,15 +16,15 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
       TextEditingController(text: '12/34');
   final TextEditingController _cvcController =
       TextEditingController(text: '456');
-  final TextEditingController _customerIdController =
-      TextEditingController(text: 'cus_O1WLT448ynbR9N');
+  // final TextEditingController _customerIdController =
+  //     TextEditingController(text: customerId);
 
   @override
   void dispose() {
     _cardNumberController.dispose();
     _expiryDateController.dispose();
     _cvcController.dispose();
-    _customerIdController.dispose();
+    // _customerIdController.dispose();
     super.dispose();
   }
 
@@ -42,7 +40,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         },
       };
 
-      final customerId = _customerIdController.text;
+      // final customerId = _customerIdController.text;
 
       final url = 'https://api.stripe.com/v1/payment_methods';
       final headers = {
@@ -103,17 +101,17 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
           key: _formKey,
           child: Column(
             children: [
-              TextFormField(
-                controller: _customerIdController,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(labelText: 'Customer ID'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a customer ID';
-                  }
-                  return null;
-                },
-              ),
+              // TextFormField(
+              //   controller: _customerIdController,
+              //   keyboardType: TextInputType.text,
+              //   decoration: InputDecoration(labelText: 'Customer ID'),
+              //   validator: (value) {
+              //     if (value == null || value.isEmpty) {
+              //       return 'Please enter a customer ID';
+              //     }
+              //     return null;
+              //   },
+              // ),
               TextFormField(
                 controller: _cardNumberController,
                 keyboardType: TextInputType.number,

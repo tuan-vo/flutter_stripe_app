@@ -2,11 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
-
-const publishable_key =
-    "pk_test_51N6pjfJjOgMxOgVuOUaXzf9VAReJKHOLgDgQr2kyxM1I055VmjZCJ2WMDA4EB2A0pjjGYr0atHbWU3Cw2fzCFS0y00QcaPZU1G";
-const secret_key =
-    "sk_test_51N6pjfJjOgMxOgVuIckY4TcIzo2KHIsT540kwHIjmemQ5ISKcBRDOnMvLv4aZA5d1Cxmj2FEVe3FgdDdKZ1FVakv00qT69qCPx";
+import 'package:flutter_stripe_app/.env.dart';
 
 class PaymentPage extends StatefulWidget {
   @override
