@@ -23,11 +23,11 @@ Follow the steps below to run the demo:
 3. flutter pub get
    ```bash
    flutter pub get
-   ``
+   ```
 4. Change branch
    ```bash
    git checkout add-and-pay-saved-payment-method
-   ``
+   ```
  
 5. Replace the Stripe API keys
 - Open .env.dart file.
