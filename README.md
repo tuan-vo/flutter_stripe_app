@@ -97,10 +97,10 @@ This page makes it possible for users to view the methods they have saved
  
 ## 4. Create `.env.dart` file:
     ```bash
-     const publishable_key = "your_publishable_key";
-     const secret_key =  "your_secret_key";
-     const customerId = "your_customerId";
-     ```
+    const publishable_key = "your_publishable_key";
+    const secret_key =  "your_secret_key";
+    const customerId = "your_customerId";
+    ```
      
 ## 5.  Create `payment_page.dart` file:
 - Quick payment page requires full credit card information
