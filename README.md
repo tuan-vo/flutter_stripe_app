@@ -15,15 +15,19 @@ Follow the steps below to run the demo:
 1. Clone the repository:
    ```bash
    https://github.com/tuanvo2908t/flutter_stripe_app.git
+   ```
 2. Navigate to the project directory:
    ```bash
    cd flutter_stripe_app
+   ```
 3. flutter pub get
    ```bash
    flutter pub get
+   ``
 4. Change branch
    ```bash
    git checkout add-and-pay-saved-payment-method
+   ``
  
 5. Replace the Stripe API keys
 - Open .env.dart file.
@@ -32,16 +36,19 @@ Follow the steps below to run the demo:
   const publishable_key = "your_publishable_key";
   const secret_key =  "your_secret_key";
   const customerId = "your_customerId"
+  ```
   
 6. Run the app:
    ```bash
    flutter run
-   
+   ```
+---------------------------------
 # Functions
 - Fast payment : With this function, customers will need to pay with full information
 - Add payment methods : With this function, customers will need to pay with full information
 - See & Pay saved payment methods : With this function, customers will need to pay with full information
 
+---------------------------------
 # Code Explanation
 ## home_page.dart
 This file contains the main logic and UI for the payment page.
@@ -70,6 +77,7 @@ This page makes it possible for users to view the methods they have saved
 ## pay-with-saved-method.dart
 This page makes it possible for users to view the methods they have saved
 
+---------------------------------
 # Steps To Create Application
 ## 1. Create project.
 ## 2. Into the file `pubspec.yaml`.
@@ -84,7 +92,7 @@ This page makes it possible for users to view the methods they have saved
    flutter pub get 
    ```
    
-## 3. Into the folder `lib`:
+## 3. Into the folder `lib`
 
  
 ## 4. Create `.env.dart` file:
@@ -383,6 +391,7 @@ This page makes it possible for users to view the methods they have saved
    
 ## 7. Create  `saved-cards_page.dart` and `pay-with-saved-method.dart` file:
 - This page shows users the payment methods they have saved, and clicks to choose a method to pay.
+
 pay-with-saved-method.dart
    ```bash
    import 'package:flutter/material.dart';
