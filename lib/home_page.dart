@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_stripe_app/add-payment-methods_page.dart';
-import 'package:flutter_stripe_app/saved-cards_page.dart';
 import 'package:flutter_stripe_app/payment_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -18,24 +16,6 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PaymentMethodPage()),
-                );
-              },
-              child: const Text("Add payment methods!"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SavedCardsPage()),
-                );
-              },
-              child: const Text("See & Pay saved payment methods!"),
-            ),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(

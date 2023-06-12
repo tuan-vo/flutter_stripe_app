@@ -4,97 +4,111 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_stripe_app/.env.dart';
 
-const serverUrl = 'http://192.168.1.5:4242'; // Địa chỉ URL của máy chủ
-
 class PaymentPage extends StatefulWidget {
   @override
   _PaymentPageState createState() => _PaymentPageState();
 }
 
 class _PaymentPageState extends State<PaymentPage> {
-  TextEditingController amountController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
-  Map<String, dynamic>? paymentSheetData;
-  Map<String, dynamic>? paymentIntent;
-
-  @override
-  void initState() {
-    super.initState();
-    Stripe.publishableKey =
-        publishable_key; // Thay thế bằng Publishable Key của bạn
-  }
+  TextEditingController nameController = TextEditingController();
+  TextEditingController amountController = TextEditingController();
+  bool isLoading = false;
+  Map<String, dynamic>? paymentMethod;
 
   @override
   void dispose() {
-    amountController.dispose();
-    nameController.dispose();
     emailController.dispose();
+    nameController.dispose();
+    amountController.dispose();
     super.dispose();
+    Stripe.publishableKey = publishable_key;
   }
 
-  Future<Map<String, dynamic>> createSubscription() async {
+  Future<void> createCustomer() async {
+    setState(() {
+      isLoading = true;
+    });
+
     try {
+      String email = emailController.text;
+      String name = nameController.text;
+
       final response = await http.post(
-        Uri.parse('$serverUrl/create-subscription'),
+        Uri.parse('$serverUrl/create-customer'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'name': nameController.text,
-          'email': emailController.text,
-          'price': int.parse(amountController.text),
-        }),
+        body: jsonEncode({'name': name, 'email': email}),
       );
-      final jsonResponse = jsonDecode(response.body);
-      return jsonResponse;
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final customerId = data['customer']['id'];
+        final isCheck = data['isCheck'] ?? false;
+        final message = isCheck
+            ? "Email is already in use."
+            : "Customer created successfully.";
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
+        await makePayment(customerId);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to create customer.")),
+        );
+      }
     } catch (e) {
-      throw Exception('Failed to create subscription: $e');
+      print('An error occurred: $e');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
-  void makePayment() async {
+  Future<void> makePayment(String customerId) async {
     try {
-      // Kiểm tra xem tên và email đã được nhập
-      if (nameController.text.isEmpty || emailController.text.isEmpty) {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text('Error'),
-              content: Text('Please enter your name and email'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
-      }
-      // Khởi tạo PaymentSheetGooglePay
-      final gpay = PaymentSheetGooglePay(
+      final paymentIntent = await createPaymentIntent(customerId);
+
+      final gpay = const PaymentSheetGooglePay(
         merchantCountryCode: "JP",
         currencyCode: "JPY",
         testEnv: true,
       );
-      // Tạo một subscription trên server
-      final subscriptionData = await createSubscription();
-      // Khởi tạo Stripe
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
-          paymentIntentClientSecret: subscriptionData['clientSecret'],
-          customerEphemeralKeySecret: subscriptionData['ephemeralKey'],
-          customerId: subscriptionData['customer'],
+          paymentIntentClientSecret: paymentIntent!["client_secret"],
+          customerId: customerId,
           style: ThemeMode.light,
-          merchantDisplayName: "Your Merchant Name",
+          merchantDisplayName: "Sabir",
           googlePay: gpay,
         ),
       );
-      // Hiển thị giao diện thanh toán
       await Stripe.instance.presentPaymentSheet();
-      print('Payment successful');
     } catch (e) {
-      print('Payment failed: $e');
+      print("error: $e");
+    }
+  }
+
+  Future<Map<String, dynamic>> createPaymentIntent(String customerId) async {
+    try {
+      final amount = amountController.text;
+      final body = {
+        "amount": amount,
+        "currency": "JPY",
+        "customer": customerId
+      };
+
+      final response = await http.post(
+        Uri.parse("https://api.stripe.com/v1/payment_intents"),
+        body: body,
+        headers: {
+          "Authorization": "Bearer $secret_key",
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      );
+      return json.decode(response.body);
+    } catch (e) {
+      throw Exception('Failed to create payment intent: $e');
     }
   }
 
@@ -102,21 +116,23 @@ class _PaymentPageState extends State<PaymentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Payment Page"),
+        title: Text('Payment Demo'),
       ),
-      body: Center(
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
               controller: amountController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
-                labelText: 'Total',
+                labelText: 'Amount',
               ),
             ),
             TextField(
               controller: nameController,
+              keyboardType: TextInputType.name,
               decoration: InputDecoration(
                 labelText: 'Name',
               ),
@@ -128,9 +144,10 @@ class _PaymentPageState extends State<PaymentPage> {
                 labelText: 'Email',
               ),
             ),
+            SizedBox(height: 16.0),
             ElevatedButton(
-              onPressed: makePayment,
-              child: const Text("Pay!"),
+              onPressed: isLoading ? null : createCustomer,
+              child: Text('Payment!'),
             ),
           ],
         ),
