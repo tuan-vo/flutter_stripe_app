@@ -69,21 +69,21 @@ This page helps users to pay quickly
 # Steps To Create Application
 ## 1. Prepare API
    ```bash
-   app.post('/create-customer', async (req, res) => {
-   const { name, email } = req.body;
-   // Check if customer already exists in Stripe
-   const existingCustomers = await stripe.customers.list({ email: email });
-   if (existingCustomers.data.length > 0) {
-   // Customer already exists, return current customer information
-   res.send({ customer: existingCustomers.data[0], isCheck: true });
-   return;
-   }
-   // Create a new customer object
-   const customer = await stripe.customers.create({
-   name: name,
-   email: email,
-   });
-   res.send({ customer });
+      app.post('/create-customer', async (req, res) => {
+      const { name, email } = req.body;
+      // Check if customer already exists in Stripe
+      const existingCustomers = await stripe.customers.list({ email: email });
+      if (existingCustomers.data.length > 0) {
+      // Customer already exists, return current customer information
+      res.send({ customer: existingCustomers.data[0], isCheck: true });
+      return;
+      }
+      // Create a new customer object
+      const customer = await stripe.customers.create({
+      name: name,
+      email: email,
+      });
+      res.send({ customer });
    });
    ```
 ## 2. Create project.
