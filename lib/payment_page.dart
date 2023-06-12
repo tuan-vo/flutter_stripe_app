@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_stripe_app/.env.dart';
+
+const serverUrl = 'http://192.168.1.5:3000'; // Địa chỉ URL của máy chủ
 
 class PaymentPage extends StatefulWidget {
   @override
@@ -11,80 +14,82 @@ class PaymentPage extends StatefulWidget {
 
 class _PaymentPageState extends State<PaymentPage> {
   TextEditingController amountController = TextEditingController();
-  Map<String, dynamic>? paymentIntent;
-
-  @override
-  void initState() {
-    super.initState();
-    Stripe.publishableKey = publishable_key;
-  }
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
 
   @override
   void dispose() {
+    Stripe.publishableKey = publishable_key;
     amountController.dispose();
+    nameController.dispose();
+    emailController.dispose();
     super.dispose();
   }
 
+  Future<Map<String, dynamic>> createSubscription() async {
+    try {
+      final response = await http.post(
+        Uri.parse('$serverUrl/create_subscription'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'name': nameController.text,
+          'email': emailController.text,
+          'price': int.parse(amountController.text),
+        }),
+      );
+      final jsonResponse = jsonDecode(response.body);
+      return jsonResponse;
+    } catch (e) {
+      throw Exception('Failed to create subscription: $e');
+    }
+  }
+
   void makePayment() async {
-    try {
-      String amount = amountController.text;
+    final name = nameController.text;
+    final email = emailController.text;
+    final amount = amountController.text;
 
-      // Create a payment intent
-      paymentIntent = await createPaymentIntent(amount);
-
-      // Create a payment intent
-      var gpay = const PaymentSheetGooglePay(
-        merchantCountryCode: "US",
-        currencyCode: "USD",
-        testEnv: true,
-      );
-
-      // Create a payment intent
-      await Stripe.instance.initPaymentSheet(
-        paymentSheetParameters: SetupPaymentSheetParameters(
-          paymentIntentClientSecret: paymentIntent!["client_secret"],
-          style: ThemeMode.light,
-          merchantDisplayName: "Sabir",
-          googlePay: gpay,
-        ),
-      );
-
-      // Display the payment sheet
-      displayPaymentSheet();
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  // Present the payment sheet
-  void displayPaymentSheet() async {
-    try {
-      await Stripe.instance.presentPaymentSheet();
-      print("Done");
-    } catch (e) {
-      print("Failed");
-    }
-  }
-
-  Future<Map<String, dynamic>> createPaymentIntent(amount) async {
-    try {
-      Map<String, dynamic> body = {
-        "amount": amount,
-        "currency": "USD",
-      };
-
-      // Send a POST request to create a payment intent
-      http.Response response = await http.post(
-        Uri.parse("https://api.stripe.com/v1/payment_intents"),
-        body: body,
-        headers: {
-          "Authorization": "Bearer $secret_key",
-          "Content-Type": "application/x-www-form-urlencoded",
+    if (name.isEmpty || email.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Please enter your name and email'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('OK'),
+              ),
+            ],
+          );
         },
       );
-      return json.decode(response.body);
+      return;
+    }
+
+    final gpay = PaymentSheetGooglePay(
+      merchantCountryCode: "JP",
+      currencyCode: "JPY",
+      testEnv: true,
+    );
+
+    final subscriptionData = await createSubscription();
+    await Stripe.instance.initPaymentSheet(
+      paymentSheetParameters: SetupPaymentSheetParameters(
+        paymentIntentClientSecret: subscriptionData['clientSecret'],
+        customerEphemeralKeySecret: subscriptionData['ephemeralKey'],
+        style: ThemeMode.light,
+        merchantDisplayName: "Your Merchant Name",
+        googlePay: gpay,
+      ),
+    );
+
+    try {
+      await Stripe.instance.presentPaymentSheet();
+      print('Payment successful');
     } catch (e) {
-      throw Exception(e.toString());
+      print('Payment failed: $e');
     }
   }
 
@@ -103,6 +108,19 @@ class _PaymentPageState extends State<PaymentPage> {
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'Total',
+              ),
+            ),
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(
+                labelText: 'Name',
+              ),
+            ),
+            TextField(
+              controller: emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                labelText: 'Email',
               ),
             ),
             ElevatedButton(
