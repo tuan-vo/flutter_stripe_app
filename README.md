@@ -86,8 +86,8 @@ This page helps users to pay quickly
    res.send({ customer });
    });
    ```
-## 1. Create project.
-## 2. Into the file `pubspec.yaml`.
+## 2. Create project.
+## 3. Into the file `pubspec.yaml`.
 - Add library:
     ```bash
     dependencies:
@@ -99,17 +99,17 @@ This page helps users to pay quickly
    flutter pub get 
    ```
    
-## 3. Into the folder `lib`
+## 4. Into the folder `lib`
 
  
-## 4. Create `.env.dart` file:
+## 5. Create `.env.dart` file:
   ```bash
   const publishable_key = "your_publishable_key";
   const secret_key =  "your_secret_key";
   const serverUrl = "your_serverUrl"
   ```
      
-## 5.  Create `payment_page.dart` file:
+## 6.  Create `payment_page.dart` file:
 - Quick payment page requires full credit card information
    ```bash
    import 'dart:convert';
@@ -272,7 +272,7 @@ This page helps users to pay quickly
 
    ```
 
-## 8. Create `home_page.dart` file: 
+## 7. Create `home_page.dart` file: 
 - The main interface of the page
    ```bash
    import 'package:flutter/material.dart';
@@ -309,7 +309,7 @@ This page helps users to pay quickly
      }
    }
    ```
-## 9. Create `app.dart` file:
+## 8. Create `app.dart` file:
    ```bash
    import 'package:flutter/material.dart';
    import 'package:flutter_stripe_app/home_page.dart';
@@ -331,7 +331,7 @@ This page helps users to pay quickly
    }
    ```
    
-## 10. into the `main.dart` file to change and import the library:
+## 9. into the `main.dart` file to change and import the library:
    ```bash
    import 'package:flutter/material.dart';
    import 'package:flutter_stripe_app/app.dart';
