@@ -26,7 +26,7 @@ Follow the steps below to run the demo:
    ```
 4. Change branch
    ```bash
-   git checkout add-and-pay-saved-payment-method
+   git checkout flutter_stripe_creadit
    ```
  
 5. Replace the Stripe API keys
@@ -35,7 +35,7 @@ Follow the steps below to run the demo:
   ```bash
   const publishable_key = "your_publishable_key";
   const secret_key =  "your_secret_key";
-  const customerId = "your_customerId"
+  const serverUrl = "your_serverUrl"
   ```
   
 6. Run the app:
@@ -45,17 +45,13 @@ Follow the steps below to run the demo:
 ---------------------------------
 # Functions
 - Fast payment : With this function, customers will need to pay with full information
-- Add payment methods : With this function, customers will need to pay with full information
-- See & Pay saved payment methods : With this function, customers will need to pay with full information
+
 
 ---------------------------------
 # Code Explanation
 ## home_page.dart
 This file contains the main logic and UI for the payment page.
 - The `HomePage`: class is a stateful widget that represents the home page of the app.
-- The `makePayment()`: method handles the payment flow when the "Pay!" button is pressed. It creates a payment intent, configures the payment sheet, initializes it, and then displays it.
-- The `createPaymentIntent()` method sends a POST request to the Stripe API to create a payment intent based on the provided amount.
-- The `displayPaymentSheet()` method presents the payment sheet UI to the user.
 
 ## app.dart
 This file defines the MyApp class, which is the entry point for the Flutter app.
@@ -68,14 +64,6 @@ This file is the entry point for the Flutter app.
 ## payment_page.dart
 This page helps users to pay quickly
 
-## add-payment-methods_page.dart
-This page allows users to add new payment methods
-
-## saved-cards_page.dart
-This page makes it possible for users to view the methods they have saved
-
-## pay-with-saved-method.dart
-This page makes it possible for users to view the methods they have saved
 
 ---------------------------------
 # Steps To Create Application
