@@ -61,6 +61,7 @@ class _PaymentPageState extends State<PaymentPage> {
         await Stripe.instance.initPaymentSheet(
           paymentSheetParameters: SetupPaymentSheetParameters(
             paymentIntentClientSecret: paymentIntent!["client_secret"],
+            customerEphemeralKeySecret: paymentIntent!["ephemeralKey"],
             customerId: customerId,
             style: ThemeMode.light,
             merchantDisplayName: "Sabir",
@@ -89,21 +90,11 @@ class _PaymentPageState extends State<PaymentPage> {
   Future<Map<String, dynamic>> createPaymentIntent(String customerId) async {
     try {
       final amount = amountController.text;
-      final body = {
-        "amount": amount,
-        "currency": "JPY",
-        "customer": customerId
-      };
-
       final response = await http.post(
-        Uri.parse("https://api.stripe.com/v1/payment_intents"),
-        body: body,
-        headers: {
-          "Authorization": "Bearer $secret_key",
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
+        Uri.parse('$serverUrl/create-payment-intent'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'customerId': customerId, 'amount': amount}),
       );
-
       print(response.body);
       return json.decode(response.body);
     } catch (e) {

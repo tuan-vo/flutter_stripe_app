@@ -85,6 +85,24 @@ This page helps users to pay quickly
       });
       res.send({ customer });
    });
+
+   app.post('/create-payment-intent', async (req, res) => {
+    const { customerId, amount } = req.body;
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount,
+      currency: 'JPY',
+      customer: customerId,
+      payment_method_types: ['card'],
+      statement_descriptor: 'Custom descriptor',
+    });
+    const ephemeralKey = await stripe.ephemeralKeys.create({
+      customer: customerId,
+    }, {
+      apiVersion: '2022-08-01'
+    })
+
+    res.json({ client_secret: paymentIntent.client_secret,ephemeralKey: ephemeralKey.secret });
+   });
    ```
 ## 2. Create project.
 ## 3. Into the file `pubspec.yaml`.
