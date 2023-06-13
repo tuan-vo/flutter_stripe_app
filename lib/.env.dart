@@ -5,4 +5,4 @@ const secret_key =
     "sk_test_51NGYoeFQSye0UpDttVZAwEKLviq3Q2lfywwZMgmFXbtmopINwEQuD6pUWgeFsVAZaTmqBVd0AmMTmjti063LeOir00jGtu4s5c";
 
 // The URL of the server
-const serverUrl = 'http://192.168.1.5:4242'; 
+const serverUrl = 'http://192.168.1.5:3000'; 

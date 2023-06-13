@@ -14,7 +14,6 @@ class _PaymentPageState extends State<PaymentPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   bool isLoading = false;
-  Map<String, dynamic>? paymentMethod;
 
   @override
   void dispose() {
@@ -25,7 +24,7 @@ class _PaymentPageState extends State<PaymentPage> {
     Stripe.publishableKey = publishable_key;
   }
 
-  Future<void> createCustomer() async {
+  Future<void> makePayment() async {
     setState(() {
       isLoading = true;
     });
@@ -47,45 +46,43 @@ class _PaymentPageState extends State<PaymentPage> {
         final message = isCheck
             ? "Email is already in use."
             : "Customer created successfully.";
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(message)),
         );
-        await makePayment(customerId);
+
+        final paymentIntent = await createPaymentIntent(customerId);
+        final gpay = const PaymentSheetGooglePay(
+          merchantCountryCode: "JP",
+          currencyCode: "JPY",
+          testEnv: true,
+        );
+
+        await Stripe.instance.initPaymentSheet(
+          paymentSheetParameters: SetupPaymentSheetParameters(
+            paymentIntentClientSecret: paymentIntent!["client_secret"],
+            customerId: customerId,
+            style: ThemeMode.light,
+            merchantDisplayName: "Sabir",
+            googlePay: gpay,
+          ),
+        );
+
+        await Stripe.instance.presentPaymentSheet();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Payment successfully.")),
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Failed to create customer.")),
         );
       }
     } catch (e) {
-      print('An error occurred: $e');
+      print("Error: $e");
     } finally {
       setState(() {
         isLoading = false;
       });
-    }
-  }
-
-  Future<void> makePayment(String customerId) async {
-    try {
-      final paymentIntent = await createPaymentIntent(customerId);
-
-      final gpay = const PaymentSheetGooglePay(
-        merchantCountryCode: "JP",
-        currencyCode: "JPY",
-        testEnv: true,
-      );
-      await Stripe.instance.initPaymentSheet(
-        paymentSheetParameters: SetupPaymentSheetParameters(
-          paymentIntentClientSecret: paymentIntent!["client_secret"],
-          customerId: customerId,
-          style: ThemeMode.light,
-          merchantDisplayName: "Sabir",
-          googlePay: gpay,
-        ),
-      );
-      await Stripe.instance.presentPaymentSheet();
-    } catch (e) {
-      print("error: $e");
     }
   }
 
@@ -106,6 +103,8 @@ class _PaymentPageState extends State<PaymentPage> {
           "Content-Type": "application/x-www-form-urlencoded",
         },
       );
+
+      print(response.body);
       return json.decode(response.body);
     } catch (e) {
       throw Exception('Failed to create payment intent: $e');
@@ -146,7 +145,7 @@ class _PaymentPageState extends State<PaymentPage> {
             ),
             SizedBox(height: 16.0),
             ElevatedButton(
-              onPressed: isLoading ? null : createCustomer,
+              onPressed: isLoading ? null : makePayment,
               child: Text('Payment!'),
             ),
           ],
