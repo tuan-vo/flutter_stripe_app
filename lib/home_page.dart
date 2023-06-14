@@ -3,6 +3,7 @@ import 'package:flutter_stripe_app/payment_page.dart';
 import 'package:flutter_stripe_app/add-card.dart';
 import 'package:flutter_stripe_app/saved-cards_page.dart';
 import 'package:flutter_stripe_app/payment_page.dart';
+import 'package:flutter_stripe_app/.env.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key, required this.title}) : super(key: key);
@@ -23,10 +24,12 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AddCardPage()),
+                  MaterialPageRoute(
+                    builder: (context) => AddCardPage(customerId: customerId),
+                  ),
                 );
               },
-              child: const Text("Add payment methods!"),
+              child: const Text("Add A Card"),
             ),
             ElevatedButton(
               onPressed: () {

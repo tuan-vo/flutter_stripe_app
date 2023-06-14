@@ -40,6 +40,26 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
     }
   }
 
+  Future<void> _deleteCard(String paymentMethodId) async {
+    final detachUrl =
+        'https://api.stripe.com/v1/payment_methods/$paymentMethodId/detach';
+    final headers = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer $secret_key',
+    };
+
+    final response = await http.post(Uri.parse(detachUrl), headers: headers);
+    if (response.statusCode == 200) {
+      setState(() {
+        savedCards.removeWhere((card) => card['id'] == paymentMethodId);
+      });
+      print('Payment method deleted successfully');
+    } else {
+      final error = json.decode(response.body)['error']['message'];
+      print('Failed to delete payment method: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,21 +75,40 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
           final expMonth = card['exp_month'];
           final expYear = card['exp_year'];
 
-          return GestureDetector(
-            onTap: () {
-              // When a card is tapped, navigate to the PaymentPage and pass the selected payment method
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      PaymentPage(paymentMethod: savedCards[index]),
-                ),
+          return Dismissible(
+            key: Key(savedCards[index]['id']),
+            onDismissed: (direction) async {
+              // When a card is dismissed (swiped to delete), delete the payment method
+              await _deleteCard(savedCards[index]['id']);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Card deleted')),
               );
             },
-            child: ListTile(
-              leading: Icon(Icons.credit_card),
-              title: Text('$brand **** **** **** $last4'),
-              subtitle: Text('Expires: $expMonth/$expYear'),
+            background: Container(
+              color: Colors.red,
+              alignment: Alignment.centerRight,
+              padding: EdgeInsets.only(right: 16.0),
+              child: Icon(
+                Icons.delete,
+                color: Colors.white,
+              ),
+            ),
+            child: GestureDetector(
+              onTap: () {
+                // When a card is tapped, navigate to the PaymentPage and pass the selected payment method
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        PaymentPage(paymentMethod: savedCards[index]),
+                  ),
+                );
+              },
+              child: ListTile(
+                leading: Icon(Icons.credit_card),
+                title: Text('$brand **** **** **** $last4'),
+                subtitle: Text('Expires: $expMonth/$expYear'),
+              ),
             ),
           );
         },
