@@ -225,7 +225,7 @@ packages:
     source: hosted
     version: "9.2.1"
   stripe_platform_interface:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: stripe_platform_interface
       sha256: "8148f5fb15ed7fd9236559edfd72260657c03904cfe67d3ebba7eeaa20bb4261"

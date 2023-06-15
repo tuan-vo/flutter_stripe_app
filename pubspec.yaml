@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_stripe: ^9.2.0
   http: ^0.13.5
+  stripe_platform_interface: ^9.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

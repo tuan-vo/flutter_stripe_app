@@ -30,34 +30,25 @@ class _AddCardPageState extends State<AddCardPage> {
 
   Future<void> addCard() async {
     try {
-      final String apiUrl =
-          '$serverUrl/add-card'; // Replace with your API endpoint
+      final url =
+          '$serverUrl/add-card'; // Thay thế bằng URL của API Laravel của bạn
 
-      final Map<String, dynamic> requestBody = {
-        'customerId': customerId,
-        'card': {
-          'number': _cardNumberController.text,
-          'exp_month': int.parse(_expiryDateController.text.split('/')[0]),
-          'exp_year': int.parse(_expiryDateController.text.split('/')[1]),
-          'cvc': _cvcController.text,
-        },
-      };
-
-      final http.Response response = await http.post(
-        Uri.parse(apiUrl),
-        body: json.encode(requestBody),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      final response = await http.post(
+        Uri.parse(url),
+        body: json.encode({'customerId': customerId}),
+        headers: {'Content-Type': 'application/json'},
       );
-
+      print(response.statusCode);
       if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        print('Card added successfully!');
+        // Xử lý phản hồi thành công
+        final responseData = json.decode(response.body);
+        print(responseData); // Hoặc xử lý dữ liệu theo cách bạn muốn
       } else {
-        print('Failed to add card.');
+        // Xử lý phản hồi lỗi
+        print('Failed to add card: ${response.body}');
       }
     } catch (error) {
+      // Xử lý lỗi kết nối hoặc lỗi xử lý
       print('Error adding card: $error');
     }
   }

@@ -50,14 +50,13 @@ class _PaymentPageState extends State<PaymentPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(message)),
         );
-
         final paymentIntent = await createPaymentIntent(customerId);
         final gpay = const PaymentSheetGooglePay(
           merchantCountryCode: "JP",
           currencyCode: "JPY",
           testEnv: true,
         );
-
+        print(customerId);
         await Stripe.instance.initPaymentSheet(
           paymentSheetParameters: SetupPaymentSheetParameters(
             paymentIntentClientSecret: paymentIntent!["client_secret"],
